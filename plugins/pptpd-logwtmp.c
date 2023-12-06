@@ -13,6 +13,9 @@
 #include <utmp.h>
 #include <string.h>
 #include <pppd/pppd.h>
+#include <pppd/options.h>
+#include <linux/limits.h>
+#include "patchlevel.h"
 
 char pppd_version[] = VERSION;
 
@@ -28,7 +31,7 @@ static option_t options[] = {
   { NULL }
 };
 
-static char *reduce(char *user)
+static const char *reduce(const char *user)
 {
   char *sep;
   if (!pptpd_logwtmp_strip_domain) return user;
@@ -42,25 +45,25 @@ static char *reduce(char *user)
 
 static void ip_up(void *opaque, int arg)
 {
-  char *user = reduce(peer_authname);
-  if (debug)
-    notice("pptpd-logwtmp.so ip-up %s %s %s", ifname, user, 
+  const char *user = reduce(ppp_peer_authname(NULL, 0));
+  if (debug_on())
+    notice("pptpd-logwtmp.so ip-up %s %s %s", ppp_ifname(), user,
 	   pptpd_original_ip);
-  logwtmp(ifname, user, pptpd_original_ip);
+  logwtmp(ppp_ifname(), user, pptpd_original_ip);
 }
 
 static void ip_down(void *opaque, int arg)
 {
-  if (debug) 
-    notice("pptpd-logwtmp.so ip-down %s", ifname);
-  logwtmp(ifname, "", "");
+  if (debug_on())
+    notice("pptpd-logwtmp.so ip-down %s", ppp_ifname());
+  logwtmp(ppp_ifname(), "", "");
 }
 
 void plugin_init(void)
 {
-  add_options(options);
-  add_notifier(&ip_up_notifier, ip_up, NULL);
-  add_notifier(&ip_down_notifier, ip_down, NULL);
-  if (debug) 
+  ppp_add_options(options);
+  ppp_add_notify(NF_IP_UP, ip_up, NULL);
+  ppp_add_notify(NF_IP_DOWN, ip_down, NULL);
+  if (debug_on())
     notice("pptpd-logwtmp: $Version$");
 }

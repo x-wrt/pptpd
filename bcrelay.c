@@ -435,7 +435,7 @@ static void mainloop(int argc, char **argv)
   struct timeval time_2_wait;
   static struct ifsnr old_ifsnr[MAXIF+1]; // Old iflist to socket fd's mapping list
   static struct ifsnr cur_ifsnr[MAXIF+1]; // Current iflist to socket fd's mapping list
-  unsigned char buf[1518];
+  unsigned char buf[2048];
   char *logstr = empty;
 
   no_discifs_cntr = MAX_NODISCOVER_IFS;
