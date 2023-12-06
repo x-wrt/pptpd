@@ -671,6 +671,7 @@ static int startCall(char **pppaddrs, struct in_addr *inetaddrs)
  */
 static void launch_pppd(char **pppaddrs, struct in_addr *inetaddrs)
 {
+        static __thread char pppname[16];
         char *pppd_argv[16];
         int an = 0;
         sigset_t sigs;
@@ -791,6 +792,11 @@ static void launch_pppd(char **pppaddrs, struct in_addr *inetaddrs)
                  pppd_argv[an++] = inet_ntoa(inetaddrs[1]);
         }
 #endif
+
+        snprintf(pppname, 16, "pcap%u", getpid());
+        pppname[15] = 0;
+        pppd_argv[an++] = "ifname";
+        pppd_argv[an++] = pppname;
 
         pppd_argv[an++] = "remotenumber";
         pppd_argv[an++] = inet_ntoa(inetaddrs[1]);
