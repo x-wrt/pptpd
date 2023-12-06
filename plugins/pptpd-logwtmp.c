@@ -49,14 +49,14 @@ static void ip_up(void *opaque, int arg)
   if (debug_on())
     notice("pptpd-logwtmp.so ip-up %s %s %s", ppp_ifname(), user,
 	   pptpd_original_ip);
-  logwtmp(ppp_ifname(), user, pptpd_original_ip);
+  //logwtmp(ppp_ifname(), user, pptpd_original_ip);
 }
 
 static void ip_down(void *opaque, int arg)
 {
   if (debug_on())
     notice("pptpd-logwtmp.so ip-down %s", ppp_ifname());
-  logwtmp(ppp_ifname(), "", "");
+  //logwtmp(ppp_ifname(), "", "");
 }
 
 void plugin_init(void)
