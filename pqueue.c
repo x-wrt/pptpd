@@ -7,12 +7,10 @@
 #include "pqueue.h"
 
 #ifdef DEBUG_PQUEUE
-#define DEBUG_ON 1
+#define DEBUG_CMD(_a) { _a }
 #else
-#define DEBUG_ON 0
+#define DEBUG_CMD(_a)
 #endif
-
-#define DEBUG_CMD(_a) if (DEBUG_ON) { _a }
 
 #define MIN_CAPACITY 128 /* min allocated buffer for a packet */
 
